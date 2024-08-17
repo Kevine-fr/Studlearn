@@ -1,26 +1,31 @@
-# Utiliser l'image PHP avec Apache, car Laravel est généralement exécuté sur PHP avec un serveur web comme Apache ou Nginx
-FROM php:8.1-apache
+# Utiliser une image de base PHP avec les extensions requises pour Laravel
+FROM php:8.1-fpm
 
-# Définir le répertoire de travail
-WORKDIR /var/www/html
-
-# Installer les extensions PHP nécessaires pour Laravel
-RUN docker-php-ext-install pdo pdo_mysql
+# Installer les dépendances système nécessaires
+RUN apt-get update && apt-get install -y \
+    git \
+    unzip \
+    zip \
+    libzip-dev \
+    && docker-php-ext-install pdo_mysql zip
 
 # Installer Composer globalement
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Copier les fichiers de l'application Laravel dans le conteneur
+# Créer et définir le répertoire de travail
+WORKDIR /var/www/html
+
+# Copier le contenu du projet dans le conteneur
 COPY . .
 
-# Installer les dépendances de Laravel
+# Installer les dépendances Laravel
 RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 
 # Changer les permissions des dossiers storage et bootstrap/cache
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Exposer le port 80 (port par défaut pour Apache)
-EXPOSE 80
+# Exposer le port 8000 pour le serveur web
+EXPOSE 8000
 
-# Commande par défaut pour démarrer Apache
-CMD ["apache2-foreground"]
+# Commande par défaut pour démarrer le serveur PHP de Laravel
+CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
