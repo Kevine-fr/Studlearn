@@ -24,6 +24,11 @@ RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 # Changer les permissions des dossiers storage et bootstrap/cache
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
+# Effacer les caches Laravel (si nécessaire)
+RUN php artisan config:clear
+RUN php artisan route:clear
+RUN php artisan view:clear
+
 # Exposer le port 8000 pour le serveur web
 EXPOSE 8000
 
