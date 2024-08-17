@@ -18,13 +18,19 @@ WORKDIR /var/www/html
 # Copier le contenu du projet dans le conteneur
 COPY . .
 
+# Copier le fichier .env.example en .env
+RUN cp .env.example .env
+
+# Générer la clé d'application Laravel
+RUN php artisan key:generate
+
 # Installer les dépendances Laravel
 RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 
 # Changer les permissions des dossiers storage et bootstrap/cache
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Effacer les caches Laravel (si nécessaire)
+# Effacer les caches Laravel
 RUN php artisan config:clear
 RUN php artisan route:clear
 RUN php artisan view:clear
