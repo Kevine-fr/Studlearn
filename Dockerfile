@@ -20,6 +20,9 @@ WORKDIR /home/studlearn
 # Copier le contenu du projet dans le conteneur
 COPY . .
 
+# Installer les dépendances du projet avec Composer
+RUN composer install --no-interaction --prefer-dist --optimize-autoloader
+
 # Copier le fichier .env.example en .env
 RUN cp .env.example .env
 
