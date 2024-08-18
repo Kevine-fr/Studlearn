@@ -12,8 +12,9 @@ RUN apt-get update && apt-get install -y \
 # Installer Composer globalement
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
+RUN mkdir /home/studlearn
 # Créer et définir le répertoire de travail
-WORKDIR /var/www/html
+WORKDIR /home/studlearn
 
 # Copier le contenu du projet dans le conteneur
 COPY . .
