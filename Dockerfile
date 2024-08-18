@@ -25,7 +25,9 @@ RUN cp .env.example .env
 RUN php artisan key:generate
 
 # Installer les dépendances Laravel
-RUN composer install --no-interaction --prefer-dist --optimize-autoloader
+RUN composer install 
+
+RUN php artisan migrate
 
 # Changer les permissions des dossiers storage et bootstrap/cache
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
@@ -39,4 +41,4 @@ RUN php artisan view:clear
 EXPOSE 8000
 
 # Commande par défaut pour démarrer le serveur PHP de Laravel
-CMD ["php", "artisan", "serve"]
+CMD ["php", "artisan", "serve" , "--host=0.0.0.0", "--port=8000"]
