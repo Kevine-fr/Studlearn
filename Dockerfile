@@ -8,7 +8,7 @@ COPY . /var/www/html
 
 # Installer les dépendances
 RUN apt-get update && \
-    apt-get install -y libpng-dev libjpeg-dev libfreetype6-dev git unzip libpq-dev libpdo-mysql && \
+    apt-get install -y libpng-dev libjpeg-dev libfreetype6-dev git unzip php-mysql && \
     rm -rf /var/lib/apt/lists/*
 
 # Installer Composer
