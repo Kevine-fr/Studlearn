@@ -1,50 +1,43 @@
-# Utiliser une image de base PHP avec les extensions requises pour Laravel
-FROM php:8.1-fpm
+# Étape 1 : Construire l'image de base avec les dépendances PHP
+FROM php:8.1-fpm as base
 
-# Installer les dépendances système nécessaires
+# Installer les dépendances système
 RUN apt-get update && apt-get install -y \
     git \
-    unzip \
+    curl \
+    libpng-dev \
+    libonig-dev \
+    libxml2-dev \
     zip \
-    libzip-dev \
-    netcat-openbsd \
-    && docker-php-ext-install pdo_mysql zip
+    unzip
 
-# Installer Composer globalement
-COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+# Installer les extensions PHP requises
+RUN docker-php-ext-install pdo mbstring exif pcntl bcmath gd
 
-RUN mkdir /home/studlearn
-# Créer et définir le répertoire de travail
-WORKDIR /home/studlearn
+# Installer Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Copier le contenu du projet dans le conteneur
+# Étape 2 : Cloner le projet Laravel et installer les dépendances
+WORKDIR /var/www/html
+
+# Copier les fichiers du projet
 COPY . .
 
-# Installer les dépendances du projet avec Composer
-RUN composer install --no-interaction --prefer-dist --optimize-autoloader
+# Installer les dépendances PHP avec Composer
+RUN composer install --no-dev --optimize-autoloader
 
-# Copier le fichier .env.example en .env
+# Copier le fichier .env.example et générer la clé d'application
 RUN cp .env.example .env
-
-# Générer la clé d'application Laravel
 RUN php artisan key:generate
 
-# Copier le script wait-for-it.sh
+# Préparer l'application pour le déploiement
 COPY wait-for-it.sh /usr/local/bin/wait-for-it.sh
 RUN chmod +x /usr/local/bin/wait-for-it.sh
 
+# Créer les répertoires manquants si nécessaire et définir les permissions
 RUN mkdir -p /var/www/html/storage /var/www/html/bootstrap/cache
-
-# Changer les permissions des dossiers storage et bootstrap/cache
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Effacer les caches Laravel
-RUN php artisan config:clear
-RUN php artisan route:clear
-RUN php artisan view:clear
-
-# Exposer le port 8000 pour le serveur web
+# Exposer le port 8000 et démarrer le serveur Laravel
 EXPOSE 8000
-
-# Commande par défaut pour démarrer le serveur PHP de Laravel
-CMD ["sh", "-c", "/usr/local/bin/wait-for-it.sh db:3306 -- php artisan migrate && php artisan serve --host=0.0.0.0 --port=8000"]
+CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
