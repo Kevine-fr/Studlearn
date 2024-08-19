@@ -2,18 +2,18 @@
 FROM php:8.2-fpm
 
 # Installation des extensions PHP requises
-RUN apt-get update && apt-get install -y \
-    libpng-dev \
-    libjpeg-dev \
-    libfreetype6-dev \
-    libzip-dev \
-    libpq-dev \
-    libonig-dev \
-    git \
-    unzip \
-    libxml2-dev && \
-    docker-php-ext-configure gd --with-freetype --with-jpeg && \
-    docker-php-ext-install gd pdo pdo_mysql zip
+# RUN apt-get update && apt-get install -y \
+#     libpng-dev \
+#     libjpeg-dev \
+#     libfreetype6-dev \
+#     libzip-dev \
+#     libpq-dev \
+#     libonig-dev \
+#     git \
+#     unzip \
+#     libxml2-dev && \
+#     docker-php-ext-configure gd --with-freetype --with-jpeg && \
+#     docker-php-ext-install gd pdo pdo_mysql zip
 
 # Configuration du répertoire de travail
 WORKDIR /var/www/html
@@ -22,13 +22,15 @@ WORKDIR /var/www/html
 COPY . /var/www/html
 
 # Installer Composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+# RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# Installer les dépendances Composer
-RUN composer install --no-dev --optimize-autoloader
+# # Installer les dépendances Composer
+# RUN composer install --no-dev --optimize-autoloader
 
-# Définir les permissions
-RUN chown -R www-data:www-data /var/www/html
+# # Définir les permissions
+# RUN chown -R www-data:www-data /var/www/html
+
+RUN php artisan migrate --force
 
 # Exposer le port de l'application
 EXPOSE 8000
