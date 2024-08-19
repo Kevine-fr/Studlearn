@@ -1,7 +1,6 @@
 version: '3.8'
 
 services:
-  # Service MySQL
   db:
     image: mysql:5.7
     container_name: mysql
@@ -13,11 +12,9 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: studlearn
-      # Supprimez les variables MYSQL_USER et MYSQL_PASSWORD pour éviter les erreurs.
     networks:
       - mysql-phpmyadmin
 
-  # Application Laravel
   app:
     build:
       context: .
@@ -40,7 +37,6 @@ services:
     networks:
       - mysql-phpmyadmin
 
-  # phpMyAdmin
   phpmyadmin:
     depends_on:
       - db
