@@ -1,9 +1,8 @@
-version: "3"
+version: '3.8'
 
 services:
-  # Database
+  # Service MySQL
   db:
-    platform: linux/x86_64
     image: mysql:5.7
     container_name: mysql
     volumes:
@@ -13,30 +12,13 @@ services:
       - "3306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: yourdb
+      MYSQL_DATABASE: studlearn
       MYSQL_USER: root
       MYSQL_PASSWORD: password
     networks:
       - mysql-phpmyadmin
 
-  # phpmyadmin
-  phpmyadmin:
-    depends_on:
-      - db
-    image: phpmyadmin/phpmyadmin
-    container_name: phpmyadmin
-    restart: always
-    ports:
-      - "8090:80"
-    environment:
-      PMA_HOST: db
-      PMA_PORT: 3306
-      PMA_USER: root
-      PMA_PASSWORD: password
-    networks:
-      - mysql-phpmyadmin
-
-  # Laravel Application
+  # Application Laravel
   app:
     build:
       context: .
@@ -51,16 +33,31 @@ services:
       DB_CONNECTION: mysql
       DB_HOST: db
       DB_PORT: 3306
-      DB_DATABASE: yourdb
+      DB_DATABASE: studlearn
       DB_USERNAME: root
       DB_PASSWORD: password
     volumes:
       - .:/var/www/html
+    command: sh -c "sleep 20 && php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=8000"
     networks:
       - mysql-phpmyadmin
 
-networks:
-  mysql-phpmyadmin:
+  # phpMyAdmin
+  phpmyadmin:
+    depends_on:
+      - db
+    image: phpmyadmin
+    restart: always
+    ports:
+      - "8090:80"
+    environment:
+      PMA_HOST: db
+      MYSQL_ROOT_PASSWORD: password
+    networks:
+      - mysql-phpmyadmin
 
 volumes:
   db_data:
+
+networks:
+  mysql-phpmyadmin:
