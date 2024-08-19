@@ -30,8 +30,6 @@ COPY . /var/www/html
 # # Définir les permissions
 # RUN chown -R www-data:www-data /var/www/html
 
-RUN php artisan migrate --force
-
 # Exposer le port de l'application
 EXPOSE 8000
 
