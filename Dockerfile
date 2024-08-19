@@ -7,6 +7,7 @@ RUN apt-get update && apt-get install -y \
     libjpeg-dev \
     libfreetype6-dev \
     libzip-dev \
+    libpng-dev \
     libpq-dev \
     libonig-dev \
     git \
@@ -22,8 +23,8 @@ WORKDIR /var/www/html
 COPY . /var/www/html
 
 # Installer les dépendances Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-RUN composer install --no-dev --optimize-autoloader
+COPY --from=composer /usr/bin/composer /usr/bin/composer
+RUN composer install
 
 # Définir les permissions
 RUN chown -R www-data:www-data /var/www/html
@@ -31,5 +32,5 @@ RUN chown -R www-data:www-data /var/www/html
 # Exposer le port de l'application
 EXPOSE 8000
 
-# Lancer le serveur PHP
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
+# Script d'entrée pour exécuter les migrations et lancer le serveur
+CMD php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=8000
