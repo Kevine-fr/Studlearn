@@ -4,14 +4,18 @@ FROM php:8.2-fpm
 # Définir le répertoire de travail
 WORKDIR /var/www/html
 
-# Installer les dépendances système requises pour Composer
+# Installer les dépendances système requises
 RUN apt-get update && apt-get install -y \
     libpng-dev \
     libjpeg-dev \
     libfreetype6-dev \
     git \
     unzip \
+    libpdo-mysql \
     && rm -rf /var/lib/apt/lists/*
+
+# Installer les extensions PHP
+RUN docker-php-ext-install gd pdo pdo_mysql
 
 # Installer Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
