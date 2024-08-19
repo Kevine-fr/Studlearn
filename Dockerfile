@@ -31,6 +31,5 @@ RUN chown -R www-data:www-data /var/www/html
 # Exposer le port de l'application
 EXPOSE 8000
 
-# Correction de la commande pour lancer Docker Compose
-CMD ["docker-compose", "up"]
-
+# Démarrer le serveur PHP intégré de Laravel
+CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
