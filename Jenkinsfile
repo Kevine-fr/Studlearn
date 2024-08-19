@@ -1,49 +1,24 @@
 pipeline {
     agent any
-
-    environment {
-        GIT_REPO = 'https://github.com/Kevine-fr/Studlearn.git'
-        MYSQL_ROOT_PASSWORD = 'password'
-        MYSQL_DATABASE = 'studlearn'
-        MYSQL_USER = 'root'
-        MYSQL_PASSWORD = 'password'
-    }
-
     stages {
         stage('Clone Repository') {
             steps {
-                // Clone the Git repository
-                git branch: 'main', url: "${GIT_REPO}"
+                git 'https://github.com/Kevine-fr/Studlearn.git'
             }
         }
-
-        stage('Build Docker Images') {
+        stage('Build Docker Image') {
             steps {
-                script {
-                    // Build the Laravel application Docker image
-                    bat 'docker-compose build'
-                }
+                bat 'docker build -t my-image .'
             }
         }
-
-        stage('Deploy Services') {
+        stage('Pause for Docker Initialization') {
             steps {
-                script {
-                    // Start the Docker Compose services
-                    bat 'docker-compose up -d'
-                }
+                bat 'timeout /t 10'
             }
         }
-
-        stage('Verify Deployment') {
+        stage('Deploy with Docker Compose') {
             steps {
-                script {
-                    // Wait for a few seconds to ensure services are up
-                    bat 'sleep 10'
-
-                    // Check the status of the Docker containers
-                    bat 'docker-compose ps'
-                }
+                bat 'docker-compose up -d'
             }
         }
     }
