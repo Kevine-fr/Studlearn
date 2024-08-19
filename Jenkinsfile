@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage('Clone Repository') {
             steps {
-                git 'https://github.com/Kevine-fr/Studlearn.git'
+                git branch: 'main', url: 'https://github.com/Kevine-fr/Studlearn.git'
             }
         }
         stage('Build Docker Image') {
