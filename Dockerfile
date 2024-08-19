@@ -25,6 +25,10 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 COPY wait-for-it.sh /usr/local/bin/wait-for-it.sh
 RUN chmod +x /usr/local/bin/wait-for-it.sh
 
+# Copier le script docker-entrypoint.sh
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
 # Installer les dépendances PHP
 RUN composer install --prefer-dist --no-dev --optimize-autoloader
 
@@ -38,4 +42,8 @@ RUN sed -i "s/^DB_PASSWORD=.*/DB_PASSWORD=password/" .env && \
 # Générer la clé d'application
 RUN php artisan key:generate
 
+# Exposer le port 8000
 EXPOSE 8000
+
+# Spécifier le script d'entrée
+ENTRYPOINT ["docker-entrypoint.sh"]
