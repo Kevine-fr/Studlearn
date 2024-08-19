@@ -26,7 +26,6 @@ COPY --from=composer /usr/bin/composer /usr/bin/composer
 RUN composer install
 
 # Définir les permissions
-RUN chown -R www-data:www-data /var/www/html
 
 # Exposer le port de l'application
 EXPOSE 8000
