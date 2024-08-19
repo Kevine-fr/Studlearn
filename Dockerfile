@@ -11,10 +11,9 @@ RUN apt-get update && apt-get install -y \
     libfreetype6-dev \
     git \
     unzip \
-    libpdo-mysql \
     && rm -rf /var/lib/apt/lists/*
 
-# Installer les extensions PHP
+# Installer les extensions PHP nécessaires
 RUN docker-php-ext-install gd pdo pdo_mysql
 
 # Installer Composer
