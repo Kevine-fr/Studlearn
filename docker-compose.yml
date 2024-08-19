@@ -1,35 +1,37 @@
 version: '3.8'
 
 services:
+  # Service MySQL
   db:
-    platform: linux/x86_64
     image: mysql:5.7
+    container_name: mysql
     volumes:
       - db_data:/var/lib/mysql
     restart: always
     ports:
       - "3306:3306"
     environment:
-      MYSQL_ROOT_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: root_password
       MYSQL_DATABASE: studlearn
-      MYSQL_USER: root  # Ajout de la variable utilisateur
+      MYSQL_USER: root
       MYSQL_PASSWORD: password
-    networks:
-      - mysql-phpmyadmin
 
+  # Service phpMyAdmin
   phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
     depends_on:
       - db
-    image: phpmyadmin/phpmyadmin  # Correction de l'image pour phpMyAdmin
     restart: always
     ports:
       - "8090:80"
     environment:
       PMA_HOST: db
-      MYSQL_ROOT_PASSWORD: password  # Correction de la variable d'environnement
-    networks:
-      - mysql-phpmyadmin
+      PMA_PORT: 3306
+      PMA_USER: root
+      PMA_PASSWORD: password
 
+  # Service de l'application Laravel
   app:
     build:
       context: .
@@ -38,21 +40,16 @@ services:
     ports:
       - "8000:8000"
     depends_on:
-      - db  # Correction de la dépendance (mysql -> db)
+      - db
     environment:
       DB_CONNECTION: mysql
-      DB_HOST: db  # Correction du host pour correspondre au service 'db'
+      DB_HOST: db
       DB_PORT: 3306
-      DB_DATABASE: studlearn  # Assurez-vous que cela correspond à MYSQL_DATABASE
+      DB_DATABASE: studlearn
       DB_USERNAME: root
       DB_PASSWORD: password
     volumes:
       - .:/var/www/html
-    networks:
-      - mysql-phpmyadmin
-
-networks:
-  mysql-phpmyadmin:
 
 volumes:
   db_data:
