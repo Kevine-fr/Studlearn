@@ -11,10 +11,9 @@ RUN apt-get update && apt-get install -y \
     libonig-dev \
     git \
     unzip \
-    libxml2-dev \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install gd pdo pdo_mysql zip \
-    && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer
+    libxml2-dev && \
+    docker-php-ext-configure gd --with-freetype --with-jpeg && \
+    docker-php-ext-install gd pdo pdo_mysql zip
 
 # Configuration du répertoire de travail
 WORKDIR /var/www/html
@@ -22,8 +21,11 @@ WORKDIR /var/www/html
 # Copier les fichiers de l'application
 COPY . /var/www/html
 
+# Installer Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
 # Installer les dépendances Composer
-RUN composer install
+RUN composer install --no-dev --optimize-autoloader
 
 # Définir les permissions
 RUN chown -R www-data:www-data /var/www/html
