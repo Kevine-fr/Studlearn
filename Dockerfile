@@ -33,4 +33,5 @@ RUN chown -R www-data:www-data /var/www/html
 EXPOSE 8000
 
 # Script d'entrée pour exécuter les migrations et lancer le serveur
-CMD php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=8000
+RUN php artisan migrate --force 
+RUN php artisan serve --host=0.0.0.0 --port=8000
