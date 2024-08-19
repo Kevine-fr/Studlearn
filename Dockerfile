@@ -32,8 +32,4 @@ RUN chown -R www-data:www-data /var/www/html
 EXPOSE 8000
 
 # Script d'entrée pour exécuter les migrations et lancer le serveur
-COPY entrypoint.sh /usr/local/bin/entrypoint.sh
-RUN chmod +x /usr/local/bin/entrypoint.sh
-
-# Définir le script d'entrée
-ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+CMD ["sh", "-c", "php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=8000"]
