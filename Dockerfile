@@ -1,36 +1,26 @@
-# Étape 1 : Construire l'image de base
+# Utilisation de l'image PHP officielle
 FROM php:8.2-fpm
 
-# Installer les dépendances
-RUN apt-get update && apt-get install -y \
-    libpng-dev \
-    libjpeg-dev \
-    libfreetype6-dev \
-    libzip-dev \
-    unzip \
-    git \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install gd zip \
-    && pecl install xdebug \
-    && docker-php-ext-enable xdebug
+# Installation des extensions PHP requises
+RUN apt-get update && apt-get install -y libpng-dev libjpeg-dev libfreetype6-dev libzip-dev libpng-dev libpq-dev libonig-dev git unzip libxml2-dev && \
+    docker-php-ext-configure gd --with-freetype --with-jpeg && \
+    docker-php-ext-install gd pdo pdo_mysql zip
 
-# Installer Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-
-# Configurer le répertoire de travail
+# Configuration du répertoire de travail
 WORKDIR /var/www/html
 
 # Copier les fichiers de l'application
 COPY . /var/www/html
 
-# Copier le script d'initialisation
-COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+# Installer les dépendances Composer
+COPY --from=composer /usr/bin/composer /usr/bin/composer
+RUN composer install
 
-# Rendre le script exécutable
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+# Définir les permissions
+RUN chown -R www-data:www-data /var/www/html
 
-# Définir le point d'entrée
-ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
-
-# Exposer le port sur lequel l'application écoute
+# Exposer le port de l'application
 EXPOSE 8000
+
+# Lancer le serveur PHP
+CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
