@@ -13,8 +13,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: studlearn
-      MYSQL_USER: root
-      MYSQL_PASSWORD: password
+      # Supprimez les variables MYSQL_USER et MYSQL_PASSWORD pour éviter les erreurs.
     networks:
       - mysql-phpmyadmin
 
