@@ -1,15 +1,7 @@
 pipeline {
     agent any
 
-    stages {
-        stage('Build Docker Image') {
-            steps {
-                script {
-                    // Construire l'image Docker
-                    bat 'docker build -t studlearn-app .'
-                }
-            }
-        }
+    
 
         stage('Deploy with Docker Compose') {
             steps {
