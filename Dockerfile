@@ -7,7 +7,6 @@ RUN apt-get update && apt-get install -y \
     libjpeg-dev \
     libfreetype6-dev \
     libzip-dev \
-    libpng-dev \
     libpq-dev \
     libonig-dev \
     git \
@@ -32,6 +31,5 @@ RUN chown -R www-data:www-data /var/www/html
 # Exposer le port de l'application
 EXPOSE 8000
 
-# Script d'entrée pour exécuter les migrations et lancer le serveur
-RUN php artisan migrate --force 
-RUN php artisan serve --host=0.0.0.0 --port=8000
+# Commande par défaut pour lancer le serveur PHP
+CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
