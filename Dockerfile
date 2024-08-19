@@ -1,47 +1,26 @@
-# Étape 1 : Construire l'image de base avec les dépendances PHP
-FROM php:8.1-fpm as base
+# Utilisation de l'image PHP officielle
+FROM php:8.2-fpm
 
-# Installer les dépendances système
-RUN apt-get update && apt-get install -y \
-    git \
-    curl \
-    libpng-dev \
-    libonig-dev \
-    libxml2-dev \
-    zip \
-    unzip \
-    libjpeg-dev \
-    libfreetype6-dev \
-    libpq-dev \
-    libsqlite3-dev
+# Installation des extensions PHP requises
+RUN apt-get update && apt-get install -y libpng-dev libjpeg-dev libfreetype6-dev libzip-dev libpng-dev libpq-dev libonig-dev git unzip libxml2-dev && \
+    docker-php-ext-configure gd --with-freetype --with-jpeg && \
+    docker-php-ext-install gd pdo pdo_mysql zip
 
-# Installer les extensions PHP requises
-RUN docker-php-ext-install pdo_mysql pdo mbstring exif pcntl bcmath gd
-
-# Installer Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-
-# Étape 2 : Cloner le projet Laravel et installer les dépendances
+# Configuration du répertoire de travail
 WORKDIR /var/www/html
 
-# Copier les fichiers du projet
-COPY . .
+# Copier les fichiers de l'application
+COPY . /var/www/html
 
-# Installer les dépendances PHP avec Composer
-RUN composer install --no-dev --optimize-autoloader
+# Installer les dépendances Composer
+COPY --from=composer /usr/bin/composer /usr/bin/composer
+RUN composer install
 
-# Copier le fichier .env.example et générer la clé d'application
-RUN cp .env.example .env
-RUN php artisan key:generate
+# Définir les permissions
+RUN chown -R www-data:www-data /var/www/html
 
-# Préparer l'application pour le déploiement
-COPY wait-for-it.sh /usr/local/bin/wait-for-it.sh
-RUN chmod +x /usr/local/bin/wait-for-it.sh
-
-# Créer les répertoires manquants si nécessaire et définir les permissions
-RUN mkdir -p /var/www/html/storage /var/www/html/bootstrap/cache
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
-
-# Exposer le port 8000 et démarrer le serveur Laravel
+# Exposer le port de l'application
 EXPOSE 8000
+
+# Lancer le serveur PHP
 CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
