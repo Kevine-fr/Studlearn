@@ -21,6 +21,10 @@ RUN apt-get update && \
 # Copier Composer depuis l'image officielle Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
+# Copier le script wait-for-it.sh
+COPY wait-for-it.sh /usr/local/bin/wait-for-it.sh
+RUN chmod +x /usr/local/bin/wait-for-it.sh
+
 # Installer les dépendances PHP
 RUN composer install --prefer-dist --no-dev --optimize-autoloader
 
@@ -33,16 +37,5 @@ RUN sed -i "s/^DB_PASSWORD=.*/DB_PASSWORD=password/" .env
 # Générer la clé d'application
 RUN php artisan key:generate
 
-# Exécuter les migrations
-RUN php artisan migrate --force
-
-# Mettre en cache la configuration, les routes et les vues
-RUN php artisan config:cache && \
-    php artisan route:cache && \
-    php artisan view:cache
-
-# Exposer le port
-EXPOSE 8000
-
-# Démarrer le serveur PHP intégré de Laravel
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
+# Attendre que MySQL soit disponible avant d'exécuter les migrations
+CMD ["wait-for-it.sh", "mysql:3306", "--", "php", "artisan", "migrate", "--force"]
