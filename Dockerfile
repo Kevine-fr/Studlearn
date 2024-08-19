@@ -38,5 +38,4 @@ RUN sed -i "s/^DB_PASSWORD=.*/DB_PASSWORD=password/" .env && \
 # Générer la clé d'application
 RUN php artisan key:generate
 
-# Attendre que MySQL soit disponible avant d'exécuter les migrations et démarrer le serveur
-CMD ["sh", "-c", "wait-for-it.sh mysql:3306 -- php artisan migrate --force && php artisan serve --host=0.0.0.0"]
+EXPOSE 8000
