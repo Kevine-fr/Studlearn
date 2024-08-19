@@ -44,6 +44,3 @@ RUN php artisan key:generate
 
 # Exposer le port 8000
 EXPOSE 8000
-
-# Spécifier le script d'entrée
-ENTRYPOINT ["docker-entrypoint.sh"]
