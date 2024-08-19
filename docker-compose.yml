@@ -16,7 +16,7 @@ services:
       - DB_PORT=3306
       - DB_DATABASE=studlearn
       - DB_USERNAME=root
-      - DB_PASSWORD=
+      - DB_PASSWORD=password
     volumes:
       - .:/var/www/html
 
@@ -27,11 +27,22 @@ services:
       MYSQL_ROOT_PASSWORD: root_password
       MYSQL_DATABASE: studlearn
       MYSQL_USER: root
-      MYSQL_PASSWORD: 
+      MYSQL_PASSWORD: password
     ports:
       - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    ports:
+      - "8080:80"
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+    depends_on:
+      - mysql
 
 volumes:
   mysql_data:
