@@ -9,10 +9,14 @@ RUN apt-get update && apt-get install -y \
     libonig-dev \
     libxml2-dev \
     zip \
-    unzip
+    unzip \
+    libjpeg-dev \
+    libfreetype6-dev \
+    libpq-dev \
+    libsqlite3-dev
 
 # Installer les extensions PHP requises
-RUN docker-php-ext-install pdo mbstring exif pcntl bcmath gd
+RUN docker-php-ext-install pdo_mysql pdo mbstring exif pcntl bcmath gd
 
 # Installer Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
