@@ -31,11 +31,5 @@ RUN chown -R www-data:www-data /var/www/html
 # Exposer le port de l'application
 EXPOSE 8000
 
-# Script d'entrée pour exécuter les migrations et lancer le serveur
-
-RUN docker-composer up
-# COPY entrypoint.sh /usr/local/bin/entrypoint.sh
-# RUN chmod +x /usr/local/bin/entrypoint.sh
-
-# # Définir le script d'entrée
-# ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+# Correction de la commande pour lancer Docker Compose
+CMD ["docker-compose", "up"]
