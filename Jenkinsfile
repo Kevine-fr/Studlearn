@@ -13,7 +13,7 @@ pipeline {
         }
         stage('Pause for Docker Initialization') {
             steps {
-                bat 'timeout /t 10'
+                powershell 'Start-Sleep -Seconds 10'
             }
         }
         stage('Deploy with Docker Compose') {
