@@ -47,19 +47,4 @@ pipeline {
             }
         }
     }
-
-    post {
-        always {
-            // Clean up any unused Docker resources after the pipeline completes
-            bat 'docker system prune -f'
-        }
-
-        success {
-            echo 'Deployment succeeded!'
-        }
-
-        failure {
-            echo 'Deployment failed!'
-        }
-    }
 }
