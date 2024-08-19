@@ -31,8 +31,9 @@ RUN composer install --prefer-dist --no-dev --optimize-autoloader
 # Copier le fichier .env.example en .env
 RUN cp .env.example .env
 
-# Ajouter ou modifier la ligne DB_PASSWORD dans le fichier .env
-RUN sed -i "s/^DB_PASSWORD=.*/DB_PASSWORD=password/" .env
+# Ajouter ou modifier les lignes DB_PASSWORD et DB_DATABASE dans le fichier .env
+RUN sed -i "s/^DB_PASSWORD=.*/DB_PASSWORD=password/" .env && \
+    sed -i "s/^DB_DATABASE=.*/DB_DATABASE=studlearn/" .env
 
 # Générer la clé d'application
 RUN php artisan key:generate
