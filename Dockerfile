@@ -6,12 +6,19 @@ WORKDIR /var/www/html
 # Copier les fichiers du projet dans le conteneur
 COPY . /var/www/html
 
-# Installer les dépendances
+# Installer les dépendances du système et les extensions PHP nécessaires
 RUN apt-get update && \
-    apt-get install -y libpng-dev libjpeg-dev libfreetype6-dev git unzip php-mysql && \
+    apt-get install -y \
+        libpng-dev \
+        libjpeg-dev \
+        libfreetype6-dev \
+        git \
+        unzip && \
+    docker-php-ext-configure gd --with-freetype --with-jpeg && \
+    docker-php-ext-install gd pdo pdo_mysql && \
     rm -rf /var/lib/apt/lists/*
 
-# Installer Composer
+# Copier Composer depuis l'image officielle Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Installer les dépendances PHP
