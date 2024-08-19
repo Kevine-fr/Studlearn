@@ -33,6 +33,8 @@ RUN php artisan key:generate
 COPY wait-for-it.sh /usr/local/bin/wait-for-it.sh
 RUN chmod +x /usr/local/bin/wait-for-it.sh
 
+RUN mkdir -p /var/www/html/storage /var/www/html/bootstrap/cache
+
 # Changer les permissions des dossiers storage et bootstrap/cache
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
