@@ -38,6 +38,7 @@ RUN sed -i "s/^DB_PASSWORD=.*/DB_PASSWORD=password/" .env && \
 
 # Installer les dépendances Node.js et compiler les assets front-end
 RUN npm install
+RUN npm install vite --save-dev
 
 # Copier le script d'entrée et le rendre exécutable
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
