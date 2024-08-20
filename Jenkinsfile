@@ -11,6 +11,9 @@ pipeline {
                 script {
                     // Assurez-vous que composer est installé et utilisez-le pour installer les dépendances
                     bat 'composer install'
+                    bat 'cp .env.example .env'
+                    bat 'php artisan key:generate'
+                    bat 'php artisan migrate'
                 }
             }
         }
