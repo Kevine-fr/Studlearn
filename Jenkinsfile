@@ -12,7 +12,6 @@ pipeline {
                     // Construisez les images Docker avant de dÃ©marrer les conteneurs
                     // bat 'docker-compose build'
                     
-                    // DÃ©marrez les conteneurs Docker
                     bat 'docker-compose up -d db phpmyadmin'
                 }
             }
@@ -39,10 +38,13 @@ pipeline {
         stage('Build and Deploy Application') {
             steps {
                 script {
-                    // Construisez les images Docker avant de dÃ©marrer les conteneurs
-                    // bat 'docker-compose build'
                     
-                    // DÃ©marrez les conteneurs Docker
+                    bat 'powershell -Command "(Get-Content .env) -replace \'^DB_HOST=.*\', \'DB_HOST=db\' | Set-Content .env"'
+
+                    bat 'docker-compose build app'
+
+                    bat 'php artisan serve --port=8000'
+                    
                     bat 'docker-compose up -d app'
                 }
             }
