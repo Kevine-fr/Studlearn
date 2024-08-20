@@ -13,7 +13,8 @@ RUN apt-get update && \
         libjpeg-dev \
         libfreetype6-dev \
         git \
-        unzip && \
+        unzip \
+        npm && \
     docker-php-ext-configure gd --with-freetype --with-jpeg && \
     docker-php-ext-install gd pdo pdo_mysql && \
     rm -rf /var/lib/apt/lists/*
@@ -45,5 +46,5 @@ RUN php artisan key:generate
 # Exposer le port 8000
 EXPOSE 8000
 
-# Définir la commande à exécuter au démarrage du conteneur
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
+# Définir le point d'entrée du conteneur
+CMD ["/usr/local/bin/docker-entrypoint.sh"]
