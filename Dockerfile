@@ -44,3 +44,6 @@ RUN php artisan key:generate
 
 # Exposer le port 8000
 EXPOSE 8000
+
+# Définir la commande à exécuter au démarrage du conteneur
+CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
