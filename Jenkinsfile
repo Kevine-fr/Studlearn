@@ -17,8 +17,8 @@ pipeline {
         stage('Wait for MySQL') {
             steps {
                 script {
-                    // Attendre 15 secondes pour s'assurer que MySQL est prêt
-                    bat 'sleep 5'
+                    // Attendre 5 secondes pour s'assurer que MySQL est prêt
+                    bat 'timeout /t 5 /nobreak'
                 }
             }
         }
