@@ -42,8 +42,6 @@ pipeline {
                     bat 'powershell -Command "(Get-Content .env) -replace \'^DB_HOST=.*\', \'DB_HOST=db\' | Set-Content .env"'
 
                     bat 'docker-compose build app'
-
-                    bat 'php artisan serve --port=8000'
                     
                     bat 'docker-compose up -d app'
                 }
