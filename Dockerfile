@@ -37,7 +37,7 @@ RUN sed -i "s/^DB_PASSWORD=.*/DB_PASSWORD=password/" .env && \
     php artisan key:generate
 
 # Installer les dépendances Node.js et compiler les assets front-end
-RUN npm install && npm run dev
+RUN npm install
 
 # Copier le script d'entrée et le rendre exécutable
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
