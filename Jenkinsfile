@@ -11,14 +11,18 @@ pipeline {
                 script {
                     // Assurez-vous que Composer est installé dans l'image Docker ou l'agent
                     bat 'composer install'
-                    bat 'cp .env.example .env'
+                    
+                    // Utilisez la commande copy pour Windows
+                    bat 'copy .env.example .env'
+                    
+                    // Exécutez les commandes Artisan
                     bat 'php artisan key:generate'
                     bat 'php artisan migrate'
 
                     // Modifier le fichier .env pour configurer la base de données
-                    // Utilisez une commande compatible avec l'environnement de l'agent
-                    bat 'powershell -Command "(Get-Content .env) -replace ''^DB_PASSWORD=.*'', ''DB_PASSWORD=password'' | Set-Content .env"'
-                    bat 'powershell -Command "(Get-Content .env) -replace ''^DB_DATABASE=.*'', ''DB_DATABASE=studlearn'' | Set-Content .env"'
+                    // Utilisez PowerShell pour remplacer les lignes dans le fichier .env
+                    bat 'powershell -Command "(Get-Content .env) -replace \'^DB_PASSWORD=.*\', \'DB_PASSWORD=password\' | Set-Content .env"'
+                    bat 'powershell -Command "(Get-Content .env) -replace \'^DB_DATABASE=.*\', \'DB_DATABASE=studlearn\' | Set-Content .env"'
                 }
             }
         }
