@@ -6,6 +6,17 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/Kevine-fr/Studlearn.git'
             }
         }
+        stage('Build and Deploy DataBase') {
+            steps {
+                script {
+                    // Construisez les images Docker avant de démarrer les conteneurs
+                    // bat 'docker-compose build'
+                    
+                    // Démarrez les conteneurs Docker
+                    bat 'docker-compose up -d db phpmyadmin'
+                }
+            }
+        }
         stage('Build and Install Dependencies') {
             steps {
                 script {
@@ -33,7 +44,7 @@ pipeline {
                     // bat 'docker-compose build'
                     
                     // Démarrez les conteneurs Docker
-                    bat 'docker-compose up -d'
+                    bat 'docker-compose up -d app'
                 }
             }
         }
