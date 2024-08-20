@@ -1,12 +1,10 @@
 #!/bin/sh
-# Exécute les migrations
-php artisan migrate --force
 
-# Lance le serveur PHP
+# Lance le serveur PHP en arrière-plan
 php artisan serve --host=0.0.0.0 --port=8000 &
 
-# Lance les tâches npm en parallèle
-npm run dev
+# Lance les tâches npm
+npm run dev &
 
-# Pour garder le conteneur en cours d'exécution
+# Attend que tous les processus en arrière-plan se terminent pour garder le conteneur en cours d'exécution
 wait
