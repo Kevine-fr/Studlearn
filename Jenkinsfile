@@ -28,12 +28,11 @@ pipeline {
                     
                     // Exécutez les commandes Artisan
                     bat 'php artisan key:generate'
-                    bat 'php artisan migrate'
-
-                    // Modifier le fichier .env pour configurer la base de données
-                    // Utilisez PowerShell pour remplacer les lignes dans le fichier .env
+                    
                     bat 'powershell -Command "(Get-Content .env) -replace \'^DB_PASSWORD=.*\', \'DB_PASSWORD=password\' | Set-Content .env"'
                     bat 'powershell -Command "(Get-Content .env) -replace \'^DB_DATABASE=.*\', \'DB_DATABASE=studlearn\' | Set-Content .env"'
+                    
+                    bat 'php artisan migrate'
                 }
             }
         }
