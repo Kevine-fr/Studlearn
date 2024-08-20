@@ -32,20 +32,19 @@ pipeline {
                     bat 'powershell -Command "((Get-Content .env) -replace \'^DB_PASSWORD=.*\', \'DB_PASSWORD=password\') | Set-Content .env"'
                     bat 'powershell -Command "((Get-Content .env) -replace \'^DB_DATABASE=.*\', \'DB_DATABASE=studlearn\') | Set-Content .env"'
                     bat 'powershell -Command "((Get-Content .env) -replace \'^DB_HOST=.*\', \'DB_HOST=db\') | Set-Content .env"'
+
+                    bat 'php artisan migrate'
                 }
             }
         }
         stage('Build and Deploy Application') {
             steps {
                 script {
-                    // Construisez les images Docker avant de démarrer les conteneurs
-                    // bat 'docker-compose build'
                     
-                    // Démarrez les conteneurs Docker
+                    bat 'docker-compose build'
+                    
                     bat 'docker-compose up -d app'
                     
-                    // Exécutez les migrations après avoir attendu
-                    bat 'php artisan migrate'
                 }
             }
         }
