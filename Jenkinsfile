@@ -14,14 +14,6 @@ pipeline {
                 }
             }
         }
-        stage('Wait for MySQL') {
-            steps {
-                script {
-                    // Attendre 5 secondes pour s'assurer que MySQL est prêt
-                    bat 'timeout /t 5 /nobreak'
-                }
-            }
-        }
         stage('Build and Deploy Application') {
             steps {
                 script {
