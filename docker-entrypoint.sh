@@ -1,13 +1,12 @@
-#!/bin/bash
-
-# Attendre que MySQL soit prêt
-echo "Waiting for MySQL to be ready..."
-/usr/local/bin/wait-for-it.sh mysql:3306 --timeout=60 --strict -- echo "MySQL is up"
-
-# Exécuter les migrations avec force
-echo "Running migrations..."
+#!/bin/sh
+# Exécute les migrations
 php artisan migrate --force
 
-# Démarrer le serveur Laravel
-echo "Starting Laravel server..."
-exec php artisan serve --host=0.0.0.0 --port=8000
+# Lance le serveur PHP
+php artisan serve --host=0.0.0.0 --port=8000 &
+
+# Lance les tâches npm en parallèle
+npm run dev
+
+# Pour garder le conteneur en cours d'exécution
+wait
