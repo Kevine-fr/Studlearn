@@ -9,30 +9,29 @@ pipeline {
         stage('Build and Deploy DataBase') {
             steps {
                 script {
+                    // Construisez les images Docker avant de dÃ©marrer les conteneurs
+                    // bat 'docker-compose build'
                     
-                    // Démarrez les conteneurs Docker
+                    // DÃ©marrez les conteneurs Docker
                     bat 'docker-compose up -d db phpmyadmin'
-                    
                 }
             }
         }
         stage('Build and Install Dependencies') {
             steps {
                 script {
-                    // Assurez-vous que Composer est installé
+                    // Assurez-vous que Composer est installÃ© dans l'image Docker ou l'agent
                     bat 'composer install'
                     
                     // Utilisez la commande copy pour Windows
                     bat 'copy .env.example .env'
                     
-                    // Exécutez les commandes Artisan
+                    // ExÃ©cutez les commandes Artisan
                     bat 'php artisan key:generate'
                     
-                    // Utiliser PowerShell pour modifier le fichier .env
-                    bat 'powershell -Command "((Get-Content .env) -replace \'^DB_PASSWORD=.*\', \'DB_PASSWORD=password\') | Set-Content .env"'
-                    bat 'powershell -Command "((Get-Content .env) -replace \'^DB_DATABASE=.*\', \'DB_DATABASE=studlearn\') | Set-Content .env"'
-                    bat 'powershell -Command "((Get-Content .env) -replace \'^DB_HOST=.*\', \'DB_HOST=db\') | Set-Content .env"'
-
+                    bat 'powershell -Command "(Get-Content .env) -replace \'^DB_PASSWORD=.*\', \'DB_PASSWORD=password\' | Set-Content .env"'
+                    bat 'powershell -Command "(Get-Content .env) -replace \'^DB_DATABASE=.*\', \'DB_DATABASE=studlearn\' | Set-Content .env"'
+                    
                     bat 'php artisan migrate'
                 }
             }
@@ -40,11 +39,11 @@ pipeline {
         stage('Build and Deploy Application') {
             steps {
                 script {
+                    // Construisez les images Docker avant de dÃ©marrer les conteneurs
+                    // bat 'docker-compose build'
                     
-                    bat 'docker-compose build'
-                    
+                    // DÃ©marrez les conteneurs Docker
                     bat 'docker-compose up -d app'
-                    
                 }
             }
         }
