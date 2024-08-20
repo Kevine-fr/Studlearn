@@ -31,6 +31,8 @@ pipeline {
                     
                     bat 'powershell -Command "(Get-Content .env) -replace \'^DB_PASSWORD=.*\', \'DB_PASSWORD=password\' | Set-Content .env"'
                     bat 'powershell -Command "(Get-Content .env) -replace \'^DB_DATABASE=.*\', \'DB_DATABASE=studlearn\' | Set-Content .env"'
+                    bat 'powershell -Command "((Get-Content .env) -replace \'^DB_HOST=.*\', \'DB_HOST=db\') | Set-Content .env"'
+
                     
                     bat 'php artisan migrate'
                 }
