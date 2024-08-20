@@ -6,6 +6,10 @@ WORKDIR /var/www/html
 # Copier les fichiers du projet dans le conteneur
 COPY . /var/www/html
 
+# Copier le fichier permettant de run le projet
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
 # Exposer le port 8000
 EXPOSE 8000
 
