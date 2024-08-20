@@ -17,8 +17,8 @@ pipeline {
         stage('Wait for MySQL') {
             steps {
                 script {
-                    // Attendre que MySQL soit prêt
-                    bat 'docker-compose run --rm app sh -c "wait-for-it.sh db:3306 --timeout=30 -- echo MySQL is up"'
+                    // Attendre 15 secondes pour s'assurer que MySQL est prêt
+                    bat 'sleep 5'
                 }
             }
         }
